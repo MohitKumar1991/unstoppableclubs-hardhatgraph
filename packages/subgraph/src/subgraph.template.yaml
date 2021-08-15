@@ -3,23 +3,67 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: Unlock
     network: localhost
     source:
-      address: "{{localhost_YourContractAddress}}"
-      abi: YourContract
-      startBlock: 1
+      address: "{{localhost_UnlockAddress}}"
+      abi: Unlock
+      startBlock: 32
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - NewLock
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: Unlock
+          file: ./abis/localhost_Unlock.json
+        - name: PublicLock
+          file: ./abis/localhost_PublicLock.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: NewLock(indexed address,indexed address)
+          handler: handleNewLock
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: PublicLockPosts
+    network: localhost
+    source:
+      address: "{{localhost_PublicLockPostsAddress}}"
+      abi: PublicLockPosts
+      startBlock: 32
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Post
+      abis:
+        - name: PublicLockPosts
+          file: ./abis/localhost_PublicLockPosts.json
+        - name: PublicLock
+          file: ./abis/localhost_PublicLock.json
+      eventHandlers:
+        - event: PostPublished(address,uint256,string)
+          handler: handlePostPublished
+        - event: NewMember(address,address,string)
+          handler: handleNewMember
+      file: ./src/mapping.ts
+templates:
+  - kind: ethereum/contract
+    name: PublicLock
+    network: localhost
+    source:
+      abi: PublicLock
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - KeyPurchase
+      abis:
+        - name: PublicLock
+          file: ./abis/localhost_PublicLock.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
       file: ./src/mapping.ts

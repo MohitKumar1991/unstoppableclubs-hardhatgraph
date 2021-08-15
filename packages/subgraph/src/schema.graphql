@@ -1,15 +1,34 @@
-type Purpose @entity {
+type Lock @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
+  name: String!
+  owner: String!
+  price: BigInt!
+  createdAt: BigInt!
+  posts: [Post!] @derivedFrom(field: "lock")
+  members: [Key!] @derivedFrom(field: "lock")
+}
+
+type Post @entity {
+  id: ID!
+  sender: String!
+  lock: Lock!
+  description: String!
+  filepath: String!
   createdAt: BigInt!
   transactionHash: String!
 }
 
-type Sender @entity {
+type Key @entity {
   id: ID!
-  address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
+  lock: Lock!
+  owner: String!
   createdAt: BigInt!
-  purposeCount: BigInt!
+}
+
+type Member @entity {
+  id: ID!
+  lock: Lock!
+  pubkey: String!
+  address: String!
+  createdAt: BigInt!
 }

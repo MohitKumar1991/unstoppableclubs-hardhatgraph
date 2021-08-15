@@ -15,8 +15,13 @@ const highlight = {
   fontWeight: "bolder",
 };
 
+const fetchAllClubs = () => {
+
+}
+
 function Subgraph(props) {
   function graphQLFetcher(graphQLParams) {
+    console.log('GRAPH QL FETCHER', graphQLParams);
     return fetch(props.subgraphUri, {
       method: "post",
       headers: { "Content-Type": "application/json" },
@@ -26,18 +31,9 @@ function Subgraph(props) {
 
   const EXAMPLE_GRAPHQL = `
   {
-    purposes(first: 25, orderBy: createdAt, orderDirection: desc) {
+    posts(first: 25) {
       id
-      purpose
-      createdAt
-      sender {
-        id
-      }
-    }
-    senders {
-      id
-      address
-      purposeCount
+      description
     }
   }
   `;
